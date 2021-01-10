@@ -1,18 +1,21 @@
 const express = require('express');
 const path = require('path');
+const cors = require('cors')
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const passport = require("passport")
 const LocalStrategy = require("passport-local")
 const passportJWT = require("passport-jwt")
 
-JWTStrategy = passportJWT.Strategy
+const PORT = process.env.PORT || 4000;
+
+const JWTStrategy = passportJWT.Strategy
 
 const apiRouter = require('./routes/api');
-const { userInfo } = require('os');
 
 const app = express();
 app.use(passport.initialize())
+app.use(cors())
 
 const user = {
   id: "1",
@@ -68,4 +71,4 @@ app.use(function(err, req, res, next) {
   res.send(err.message);
 });
 
-module.exports = app;
+app.listen(PORT, () => console.log(`The server is running on port ${PORT}`))

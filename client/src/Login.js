@@ -1,36 +1,20 @@
 import React from "react";
 import { useHistory } from "react-router-dom";
+import { login } from "./api"
 
 export const Login = () => {
   const history = useHistory();
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
-    fetch("/api/login", {
-      method: "POST",
-      body: JSON.stringify({
-        email: event.target.email.value,
-        password: event.target.password.value,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => {
-        if (res.status === 200) {
-          res.json().then(data => {
-            localStorage.setItem('token', data.token)
-          })
-          history.push("/");
-        } else {
-          const error = new Error(res.error);
-          throw error;
-        }
-      })
-      .catch((err) => {
-        console.error(err);
-        alert("Error logging in please try again");
-      });
+    try {
+      const token = await login(event.target.email.value, event.target.password.value)
+      console.log(token)
+      history.push("/");
+    } catch (error) {
+      console.error(error);
+      alert("Error logging in please try again");
+    }
   };
 
   return (
